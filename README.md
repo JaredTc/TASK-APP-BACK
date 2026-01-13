@@ -10,7 +10,8 @@ Actualmente incluye:
 - CRUD de usuarios  
 - Envío de email de bienvenida  
 - CRUD de tareas  
-- Autenticación con JWT  
+- Autenticación con JWT 
+- Variables de entrono para mayor seguridad
 
 Próximamente se añadirán más funcionalidades.  
 
