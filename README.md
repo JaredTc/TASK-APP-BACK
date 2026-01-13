@@ -34,7 +34,7 @@ taskwave-backend/
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/tuusuario/taskwave-backend.git
+git clone https://github.com/JaredTc/TASK-APP-BACK.git
 cd taskwave-backend
 
 # Crear y activar entorno virtual
