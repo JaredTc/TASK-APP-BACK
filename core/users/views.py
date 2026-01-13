@@ -2,6 +2,7 @@ from django.core.mail import EmailMessage
 from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from rest_framework.decorators import permission_classes
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -53,23 +54,48 @@ class UserRegistrationView(APIView):
 @permission_classes([IsAuthenticated])
 class UserListView(APIView):
     def get(self, request):
-        users = CustomUser.objects.all()
-        total = users.count()
-        serializer = UserSerializer(users, many=True)
-        return Response({'count': total, 'user': serializer.data}, status=status.HTTP_200_OK)
+        paginator = PageNumberPagination()
+        paginator.page_size = 10  # 👈 tamaño de página
 
+        queryset = CustomUser.objects.all().order_by('-date_joined')
 
-permission_classes([IsAuthenticated])
+        result_page = paginator.paginate_queryset(queryset, request)
+        serializer = UserSerializer(result_page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
+
+        # users = CustomUser.objects.all()
+        # total = users.count()
+        # serializer = UserSerializer(users, many=True)
+        # return Response({'count': total, 'user': serializer.data}, status=status.HTTP_200_OK)
+
 
 
 class UpdateUserView(APIView):
-    def put(self, request, pk):
-        user = CustomUser.objects.get(pk=pk)
-        serializer = UpdateUserSerializer(user, data=request.data)
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, pk):
+        user = get_object_or_404(CustomUser, pk=pk)
+
+        serializer = UpdateUserSerializer(
+            user,
+            data=request.data,
+            partial=True
+        )
+
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "User update successfully"}, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # permission_classes = [IsAuthenticated]
+    # def put(self, request, pk):
+    #     user = CustomUser.objects.get(pk=pk)
+    #     serializer = UpdateUserSerializer(user, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response({"message": "User update successfully"}, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @permission_classes([IsAuthenticated])

@@ -6,7 +6,8 @@ from django.db import models
 
 class CustomUser(AbstractUser):
     position = models.CharField(max_length=255, blank=True, null=True)
-    imgProfile = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    imgProfile =  models.URLField(null=True, blank=True)
+        # models.ImageField(upload_to='profile_images/', blank=True, null=True)
 
     def __str__(self):
         return self.username

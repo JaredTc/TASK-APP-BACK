@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 
@@ -33,6 +34,26 @@ class CreateTask(APIView):
             # Pass the user to the save method
             serializer.save(created_by=request.user)
             return Response({"message": "Task created successfully"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UpdateTask(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, id):
+        task = get_object_or_404(Task,uuid=id, created_by=request.user)
+
+        serializer = TaskSerializer(
+            task,
+            data=request.data
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {"message": "Task updated successfully"},
+                status=status.HTTP_200_OK
+            )
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
