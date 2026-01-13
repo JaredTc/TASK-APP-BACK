@@ -10,4 +10,6 @@ urlpatterns = [
     path('add-alert/', createAlert.as_view(), name='add-alert'),
     path('add-status/', createTaskStatus.as_view(), name='add-status'),
     path('total_status/', total_status.as_view(), name='total_status'),
+    path('update/<uuid:id>/', UpdateTask.as_view(), name='update-task'),
+
 ]
