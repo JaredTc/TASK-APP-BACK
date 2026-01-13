@@ -35,7 +35,7 @@ taskwave-backend/
 ```bash
 # Clonar el repositorio
 git clone https://github.com/JaredTc/TASK-APP-BACK.git
-cd taskwave-backend
+cd TASK-APP-BACK
 
 # Crear y activar entorno virtual
 python -m venv .venv
