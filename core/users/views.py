@@ -35,10 +35,7 @@ class UserRegistrationView(APIView):
 
         if serializer.is_valid():
             try:
-                # Guardar el usuario y manejar la carga de imagen si se proporciona
                 user = serializer.save()
-                # Aquí podrías realizar acciones adicionales después de guardar el usuario,
-                # como enviar correos electrónicos de confirmación, etc.
                 email_welcome(user.email)
                 return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
             except IntegrityError as e:
@@ -55,19 +52,13 @@ class UserRegistrationView(APIView):
 class UserListView(APIView):
     def get(self, request):
         paginator = PageNumberPagination()
-        paginator.page_size = 10  # 👈 tamaño de página
-
+        paginator.page_size = 10
         queryset = CustomUser.objects.all().order_by('-date_joined')
-
         result_page = paginator.paginate_queryset(queryset, request)
         serializer = UserSerializer(result_page, many=True)
-
         return paginator.get_paginated_response(serializer.data)
 
-        # users = CustomUser.objects.all()
-        # total = users.count()
-        # serializer = UserSerializer(users, many=True)
-        # return Response({'count': total, 'user': serializer.data}, status=status.HTTP_200_OK)
+
 
 
 
@@ -88,14 +79,6 @@ class UpdateUserView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    # permission_classes = [IsAuthenticated]
-    # def put(self, request, pk):
-    #     user = CustomUser.objects.get(pk=pk)
-    #     serializer = UpdateUserSerializer(user, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response({"message": "User update successfully"}, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @permission_classes([IsAuthenticated])
